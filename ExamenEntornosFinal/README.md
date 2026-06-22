@@ -19,9 +19,9 @@ Diseño: MotorJuego orquesta y mantiene la lista de EntidadJuego. Entidades impl
 
 ## Diagrama de Clases UML (Mermaid)
 
-```mermaid
 classDiagram
     direction TB
+
     class EntidadJuego {
         - int x
         - int y
@@ -30,7 +30,7 @@ classDiagram
         - int vida
         - int id
         + void mover()
-        + boolean colisionaCon(EntidadJuego)
+        + boolean colisionaCon(EntidadJuego other)
         + void renderLog()
     }
 
@@ -41,27 +41,37 @@ classDiagram
     }
 
     class NaveEnemiga {
-        - enum Estado {PATRULLAR, ATACAR}
-        - Estado estado
-        - int patrullaDir
         + NaveEnemiga()
         + void mover()
+        - Estado estado
+        - int patrullaDir
+    }
+
+    class Estado {
+        <<enumeration>>
+        PATRULLAR
+        ATACAR
     }
 
     class Defensa {
         + Defensa()
         + void mover()
-        + void recibirImpacto(int)
+        + void recibirImpacto(int dano)
     }
 
     class Proyectil {
-        + enum Origen {JUGADOR, ENEMIGO}
+        + Proyectil()
+        + Proyectil(Origen origen, int dano, int velocidad)
+        + void mover()
         - Origen origen
         - int dano
         - int velocidad
-        + Proyectil()
-        + Proyectil(Origen,int,int)
-        + void mover()
+    }
+
+    class Origen {
+        <<enumeration>>
+        JUGADOR
+        ENEMIGO
     }
 
     class MotorJuego {
@@ -75,7 +85,7 @@ classDiagram
         + MotorJuego()
         + static MotorJuego getInstancia()
         + int generarId()
-        + void addEntidad(EntidadJuego)
+        + void addEntidad(EntidadJuego e)
         + NaveJugador getJugador()
         + List~EntidadJuego~ getEntidades()
         + void pausar()
@@ -87,7 +97,7 @@ classDiagram
         - boolean pausado
         + GestorEntradas()
         + void pulsarBotonAccion()
-        + void desplazarEntidad(String,String)
+        + void desplazarEntidad(String idEntidad, String direccion)
         + void pausar()
         + void reanudar()
     }
@@ -95,20 +105,15 @@ classDiagram
     class SistemaPuntuacion {
         - int puntos
         + SistemaPuntuacion()
-        + void sumar(int)
-        + void restar(int)
+        + void sumar(int pts)
+        + void restar(int pts)
         + int mostrarPuntuacion()
     }
 
-    MotorJuego "1" o-- "0..*" EntidadJuego : gestiona >
+    MotorJuego "1" o-- "0..*" EntidadJuego : gestiona
     EntidadJuego <|-- NaveJugador
     EntidadJuego <|-- NaveEnemiga
     EntidadJuego <|-- Defensa
-    EntidadJuego <|-- Proyectil
-    MotorJuego o-- SistemaPuntuacion : usa >
-    GestorEntradas ..> MotorJuego : invoca >
-    NaveJugador ..> Proyectil : crea >
-```
 
 ## Diagrama de Casos de Uso UML (Mermaid)
 

@@ -56,9 +56,11 @@ Crea Proyectil con origen (JUGADOR/ENEMIGO), daño, velocidad y lógica de movim
 
 Implementa la detección de colisiones simple en MotorJuego: comparar rectángulos (x,y,w,h) y aplicar consecuencias (dañar, destruir, sumar puntos).
 
-Genera pruebas unitarias (JUnit) para MotorJuego: testActualizarMovimiento(), testColisiones(), testAñadirEliminarEntidades().
 
-Refactoriza para asegurar que el proyecto no exceda 9 clases; sugiere qué funcionalidad mover si hace falta reducir clases.
+
+
+
+Genera pruebas unitarias (JUnit) para MotorJuego: testActualizarMovimiento(), testColisiones(), testAñadirEliminarEntidades().
 
 Añade logs detallados en actualizar() que muestren: tick, posición y estado de cada entidad, colisiones detectadas y puntuación.
 

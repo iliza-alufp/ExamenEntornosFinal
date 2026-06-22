@@ -117,17 +117,21 @@ classDiagram
 
 ## Diagrama de Casos de Uso UML (Mermaid)
 
-```mermaid
-%% Diagrama de Casos de Uso
-actor Jugador
+usecaseDiagram
+    actor Jugador
 
-rectangle Sistema {
-  Jugador --> (CU-01 Iniciar Partida)
-  Jugador --> (CU-02 Disparar)
-  Jugador --> (CU-03 Pausar/Reanudar)
-  Jugador --> (CU-04 Mover Jugador)
-}
-```
+    Jugador --> (Iniciar Partida)
+    Jugador --> (Disparar)
+    Jugador --> (Pausar/Reanudar)
+    Jugador --> (Mover Jugador)
+
+    rectangle Sistema {
+        (Iniciar Partida)
+        (Disparar)
+        (Pausar/Reanudar)
+        (Mover Jugador)
+    }
+
 
 ## Especificación de Casos de Uso (plantilla exigida)
 

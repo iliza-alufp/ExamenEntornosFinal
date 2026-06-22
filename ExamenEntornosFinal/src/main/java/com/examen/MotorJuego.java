@@ -14,29 +14,19 @@ public class MotorJuego {
         instancia = this;
 
         this.jugador = new NaveJugador();
-        jugador.x = 10;
-        jugador.y = 50;
-        jugador.id = 1;
+        jugador.x = 10; jugador.y = 50; jugador.id = 1;
 
         EntidadJuego enemigo1 = new NaveEnemiga();
-        enemigo1.x = 100;
-        enemigo1.y = 50;
-        enemigo1.id = 2;
+        enemigo1.x = 100; enemigo1.y = 50; enemigo1.id = 2;
 
         EntidadJuego enemigo2 = new NaveEnemiga();
-        enemigo2.x = 140;
-        enemigo2.y = 60;
-        enemigo2.id = 3;
+        enemigo2.x = 140; enemigo2.y = 60; enemigo2.id = 3;
 
         EntidadJuego proyectil = new Proyectil();
-        proyectil.x = 12;
-        proyectil.y = 50;
-        proyectil.id = 4;
+        proyectil.x = 12; proyectil.y = 50; proyectil.id = 4;
 
         EntidadJuego defensa = new Defensa();
-        defensa.x = 200;
-        defensa.y = 100;
-        defensa.id = 5;
+        defensa.x = 200; defensa.y = 100; defensa.id = 5;
 
         entidades.add(jugador);
         entidades.add(enemigo1);
@@ -70,6 +60,18 @@ public class MotorJuego {
     public List<EntidadJuego> getEntidades() {
         return entidades;
     }
+
+    // -------------------------
+    // MÉTODOS AÑADIDOS AQUÍ
+    // -------------------------
+    public void pausar() {
+        System.out.println("MotorJuego: pausa activada.");
+    }
+
+    public void reanudar() {
+        System.out.println("MotorJuego: pausa desactivada.");
+    }
+    // -------------------------
 
     public void actualizar() {
         tick++;

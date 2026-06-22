@@ -1,3 +1,4 @@
+package com.examen;
 public abstract class EntidadJuego {
     protected int x;
     protected int y;

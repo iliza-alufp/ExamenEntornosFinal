@@ -1,3 +1,4 @@
+package com.examen;
 public class Defensa extends EntidadJuego {
     public Defensa() {
         this.ancho = 20;

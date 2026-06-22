@@ -1,63 +1,168 @@
-# ExamenEntornosFinal
+# ExamenEntornosFinal — Shooter 2D de consola (simulación)
 
-Proyecto de ejemplo: motor de juego simple en Java (paquete `com.examen`). Proporciona entidades básicas (jugador, enemigos, defensas, proyectiles), un motor que actualiza la simulación y utilidades para entradas y puntuación. El objetivo es servir como ejercicio/plantilla para prácticas.
+Temática elegida: simulador simple de combate espacial 2D en consola. El jugador controla una nave que patrulla y dispara, hay naves enemigas con IA básica, defensas/barreras estáticas y proyectiles. El objetivo es ilustrar arquitectura de un motor de juego mínimo y las interacciones entre entidades.
 
-## Requisitos
-- JDK 11+ instalado y configurado en PATH (javac/java).
-- Maven (opcional para build/packaging) en PATH.
-- Entorno Windows (comandos mostrados en ejemplos).
+## Arquitectura del software
 
-## Estructura principal
-- src/main/java/com/examen/
-  - Main.java
-  - MotorJuego.java
-  - EntidadJuego.java
-  - NaveJugador.java
-  - NaveEnemiga.java
-  - Defensa.java
-  - GestorEntradas.java
-  - SistemaPuntuacion.java
-  - Proyectil.java
-- README.md (este archivo)
+Justificación y descripción de clases principales:
+- MotorJuego: núcleo de la simulación. Gestiona lista de entidades, ticks, actualización (mover, detectar colisiones, aplicar consecuencias) y puntuación. Centraliza creación de ids y referencia al jugador.
+- EntidadJuego (abstracta): modelo base para todas las entidades; declara atributos espaciales y físicas, método abstracto mover(), detección AABB y renderLog().
+- NaveJugador: entidad controlable; comportamiento simple de movimiento y método disparar() que genera y registra Proyectil en MotorJuego.
+- NaveEnemiga: NPC con dos estados (PATRULLAR/ATACAR) y transición según distancia al jugador.
+- Defensa: barrera con puntos de vida y método recibirImpacto(int daño).
+- Proyectil: objeto móvil con origen (JUGADOR/ENEMIGO), daño y velocidad; lógica de movimiento según origen.
+- GestorEntradas: API de control para la simulación (disparar, mover entidades por id, pausar/reanudar).
+- SistemaPuntuacion: acumulador de puntos con operaciones sumar/restar/mostrar.
+- Main: arranca la simulación de consola (iniciarPartidaSimulada()).
+
+Diseño: MotorJuego orquesta y mantiene la lista de EntidadJuego. Entidades implementan mover() y renderLog(); MotorJuego detecta colisiones AABB y aplica reglas (daño, destrucción, puntuación). GestorEntradas es fachada para acciones externas (simular teclado/ratón).
+
+## Diagrama de Clases UML (Mermaid)
+
+```mermaid
+classDiagram
+    direction TB
+    class EntidadJuego {
+        - int x
+        - int y
+        - int ancho
+        - int alto
+        - int vida
+        - int id
+        + void mover()
+        + boolean colisionaCon(EntidadJuego)
+        + void renderLog()
+    }
+
+    class NaveJugador {
+        + NaveJugador()
+        + void mover()
+        + Proyectil disparar()
+    }
+
+    class NaveEnemiga {
+        - enum Estado {PATRULLAR, ATACAR}
+        - Estado estado
+        - int patrullaDir
+        + NaveEnemiga()
+        + void mover()
+    }
+
+    class Defensa {
+        + Defensa()
+        + void mover()
+        + void recibirImpacto(int)
+    }
+
+    class Proyectil {
+        + enum Origen {JUGADOR, ENEMIGO}
+        - Origen origen
+        - int dano
+        - int velocidad
+        + Proyectil()
+        + Proyectil(Origen,int,int)
+        + void mover()
+    }
+
+    class MotorJuego {
+        - static MotorJuego instancia
+        - List~EntidadJuego~ entidades
+        - int tick
+        - NaveJugador jugador
+        - int nextId
+        - boolean pausado
+        - SistemaPuntuacion puntuacion
+        + MotorJuego()
+        + static MotorJuego getInstancia()
+        + int generarId()
+        + void addEntidad(EntidadJuego)
+        + NaveJugador getJugador()
+        + List~EntidadJuego~ getEntidades()
+        + void pausar()
+        + void reanudar()
+        + void actualizar()
+    }
+
+    class GestorEntradas {
+        - boolean pausado
+        + GestorEntradas()
+        + void pulsarBotonAccion()
+        + void desplazarEntidad(String,String)
+        + void pausar()
+        + void reanudar()
+    }
+
+    class SistemaPuntuacion {
+        - int puntos
+        + SistemaPuntuacion()
+        + void sumar(int)
+        + void restar(int)
+        + int mostrarPuntuacion()
+    }
+
+    MotorJuego "1" o-- "0..*" EntidadJuego : gestiona >
+    EntidadJuego <|-- NaveJugador
+    EntidadJuego <|-- NaveEnemiga
+    EntidadJuego <|-- Defensa
+    EntidadJuego <|-- Proyectil
+    MotorJuego o-- SistemaPuntuacion : usa >
+    GestorEntradas ..> MotorJuego : invoca >
+    NaveJugador ..> Proyectil : crea >
+```
+
+## Diagrama de Casos de Uso UML (Mermaid)
+
+```mermaid
+%% Diagrama de Casos de Uso
+actor Jugador
+
+rectangle Sistema {
+  Jugador --> (CU-01 Iniciar Partida)
+  Jugador --> (CU-02 Disparar)
+  Jugador --> (CU-03 Pausar/Reanudar)
+  Jugador --> (CU-04 Mover Jugador)
+}
+```
+
+## Especificación de Casos de Uso (plantilla exigida)
+
+Caso de uso 1:
+Nombre: CU-01 Iniciar Partida  
+Objetivo: Inicializar MotorJuego, cargar entidades iniciales y arrancar la simulación por consola.  
+Actor Principal: Jugador  
+Precondiciones: No existe una partida en curso; JDK disponible y programa compilado.  
+Flujo Principal: Paso 1: Ejecutar Main.main(). Paso 2: Main llama a iniciarPartidaSimulada(). Paso 3: MotorJuego se instancia y crea entidades iniciales (jugador, enemigos, defensas, proyectiles de ejemplo). Paso 4: Bucle de ticks ejecuta MotorJuego.actualizar() periódicamente mostrando logs por consola. Paso 5: Finaliza cuando se cumple condición de parada (ticks máximos o jugador destruido).  
+Flujos Alternativos: Si MotorJuego no puede inicializarse, mostrar error y terminar; si se pulsa pausar, la simulación detiene ticks hasta reanudar.  
+Postcondiciones: MotorJuego detenido; estado final de entidades mostrado; puntuación final disponible.  
+Reglas de Negocio: No se puede iniciar una nueva partida si ya existe MotorJuego.instancia (evitar doble instanciación).
+
+Caso de uso 2:
+Nombre: CU-02 Disparar  
+Objetivo: El jugador dispara un proyectil que puede impactar enemigos o defensas.  
+Actor Principal: Jugador  
+Precondiciones: Partida en curso; existe instancia de MotorJuego y NaveJugador viva.  
+Flujo Principal: Paso 1: El jugador invoca GestorEntradas.pulsarBotonAccion() o el Main/automatización llama a NaveJugador.disparar(). Paso 2: NaveJugador.disparar() crea Proyectil con origen JUGADOR, asigna posición y id y registra en MotorJuego.addEntidad(). Paso 3: En el siguiente tick, MotorJuego.actualizar() mueve Proyectil y comprueba colisiones. Paso 4: Si colisiona con NaveEnemiga o Defensa, aplicar daño y eliminar entidades según reglas. Paso 5: Actualizar SistemaPuntuacion si el enemigo muere.  
+Flujos Alternativos: Si no hay jugador (muerto), pulsarBotonAccion() informa y no crea proyectil. Si MotorJuego está pausado, la creación puede ocurrir pero movimiento/colisión se retrasan hasta reanudar.  
+Postcondiciones: Proyectil registrado; posibles efectos aplicados (daño, destrucción, puntos).  
+Reglas de Negocio: Proyectiles de jugador solo dañan naves enemigas y defensas; un proyectil desaparece al impactar.
 
 ## Cómo compilar y ejecutar
 
-Usando Maven (recomendado si existe pom.xml):
+Requisitos: JDK 11+ y opcionalmente Maven.
 
-1. Compilar:
-   - Desde la raíz del proyecto:
-     - mvn clean package
-2. Ejecutar desde clases compiladas:
-   - mvn -q -Dexec.mainClass="com.examen.Main" org.codehaus.mojo:exec-maven-plugin:3.1.0:java
-   (si no está configurado el plugin en pom.xml, usar la siguiente opción)
-3. Ejecutar con java directamente:
-   - mvn -q -DskipTests package
-   - java -cp target/classes;target/dependency/* com.examen.Main
-   (en Windows usar `;` como separador de classpath)
+Con Maven (desde la raíz del proyecto):
+- Compilar: mvn clean package
+- Ejecutar: mvn -q -Dexec.mainClass="com.examen.Main" org.codehaus.mojo:exec-maven-plugin:3.1.0:java
 
-Sin Maven (javac + java):
-
-1. Compilar:
-   - cd src/main/java
-   - javac -d ../../classes com/examen/*.java
-2. Ejecutar:
-   - cd ../../classes
-   - java com.examen.Main
-
-Ejemplo rápido (Windows CMD usando clases compiladas manualmente):
+Sin Maven (javac + java) — Windows CMD:
 - cd d:\DATA2\Examen\ExamenEntornosFinal\ExamenEntornosFinal\src\main\java
 - javac -d d:\DATA2\Examen\ExamenEntornosFinal\ExamenEntornosFinal\target\classes com\examen\*.java
 - cd d:\DATA2\Examen\ExamenEntornosFinal\ExamenEntornosFinal\target\classes
 - java com.examen.Main
 
-## Uso básico
-- La clase `Main` inicializa `MotorJuego` y arranca una simulación por consola (`iniciarPartidaSimulada()`).
-- `MotorJuego.actualizar()` realiza un tick de simulación: mueve entidades, detecta colisiones y aplica efectos (daño, destrucción, puntuación).
-- `GestorEntradas` ofrece métodos para interactuar con la simulación (disparo del jugador, mover entidades, pausar/reanudar).
-- `SistemaPuntuacion` mantiene y muestra la puntuación en consola.
+Nota: si usas un IDE (IntelliJ/VSCode) importa el proyecto Maven o marca src/main/java como source root y ejecuta com.examen.Main.
 
-## APIs públicas (resumen por clase)
-El listado muestra los métodos y campos públicos más relevantes (firma aproximada). Todas las clases están en el paquete `com.examen`.
+## APIs públicas (resumen)
 
 - com.examen.Main
   - public static void main(String[] args)
@@ -82,30 +187,30 @@ El listado muestra los métodos y campos públicos más relevantes (firma aproxi
 
 - com.examen.NaveJugador
   - public NaveJugador()
-  - @Override public void mover()
-  - public Proyectil disparar()    // crea un proyectil y lo registra en MotorJuego
+  - public void mover()
+  - public Proyectil disparar()
 
 - com.examen.NaveEnemiga
   - public NaveEnemiga()
-  - @Override public void mover()  // comportamiento PATRULLAR / ATACAR en base a distancia al jugador
+  - public void mover()
 
 - com.examen.Defensa
   - public Defensa()
-  - @Override public void mover()
-  - (en algunas versiones puede existir) public void recibirImpacto(int dano)
+  - public void mover()
+  - public void recibirImpacto(int dano)
 
 - com.examen.Proyectil
   - public enum Origen { JUGADOR, ENEMIGO }
   - public Proyectil()
   - public Proyectil(Origen origen, int dano, int velocidad)
+  - public void mover()
   - public Origen origen
   - public int dano
   - public int velocidad
-  - @Override public void mover()  // avanza según origen y velocidad
 
 - com.examen.GestorEntradas
   - public GestorEntradas()
-  - public void pulsarBotonAccion()                       // hace que el jugador dispare
+  - public void pulsarBotonAccion()
   - public void desplazarEntidad(String idEntidad, String direccion)
   - public void pausar()
   - public void reanudar()
@@ -116,27 +221,11 @@ El listado muestra los métodos y campos públicos más relevantes (firma aproxi
   - public void restar(int pts)
   - public int mostrarPuntuacion()
 
-Notas:
-- Las clases manejan logs por consola (System.out.printf) para informar sobre movimientos, colisiones, daños y puntuación.
-- Identificadores de entidades (`id`) son enteros asignados por `MotorJuego.generarId()` si no se establecen manualmente.
+## Notas finales y recomendaciones
+- Los logs por consola (System.out.printf) están diseñados para facilitar la observación del comportamiento sin interfaz gráfica.
+- Para probar interacciones rápidas, ejecutar Main y usar GestorEntradas desde un pequeño programa de pruebas o ampliando Main para llamar a sus métodos en momentos concretos.
+- Ajustes fáciles: valores de velocidad, daño, rangos de detección de IA y vida de defensas se encuentran en las clases respectivas.
 
-## Diseño y comportamiento relevantes
-- Colisiones: detección AABB (rectángulos) mediante `EntidadJuego.colisionaCon()`. `MotorJuego` itera pares y aplica efectos:
-  - Proyectil JUGADOR impacta `NaveEnemiga` → reduce vida del enemigo, elimina proyectil y suma puntos si muere.
-  - Proyectil ENEMIGO impacta `NaveJugador` → reduce vida del jugador.
-  - Proyectil impacta `Defensa` → llama `recibirImpacto`.
-  - Colisiones genéricas (jugador-enemigo) reducen vidas de ambos.
-- `NaveEnemiga` alterna entre patrullar y atacar según distancia al jugador.
-- `NaveJugador.disparar()` crea `Proyectil` posicionado delante de la nave y lo registra en `MotorJuego`.
-
-## Recomendaciones para pruebas
-- Ejecutar `Main` y observar logs por consola.
-- Usar `GestorEntradas` para provocar disparos (`pulsarBotonAccion`) y mover entidades manualmente.
-- Ajustar parámetros (velocidades, daño, rangos) directamente en las clases si se desea experimentar.
-
-## Cómo contribuir
-- Abrir un issue o pull request con cambios en el repositorio.
-- Mantener coherencia de paquetes y tests si se añaden.
 
 ## Prompts usados
 
@@ -165,6 +254,9 @@ Implementa la detección de colisiones simple en MotorJuego: comparar rectángul
 Arregla todos los errores que tenga los archivos te va a venir en dos partes dejalo funcional
 
 En readme completa la documentacion, añade además con cómo compilar, ejecutar, y las APIs públicas de cada clase.
+
+Añade al readme  un Diagrama de Clases UML: Generado obligatoriamente usando código Mermaid o PlantUML e incrustado en el Markdown. Debe reflejar atributos privados, métodos públicos y relaciones (Asociación, Herencia, etc.).
+
 
 
 

@@ -133,7 +133,7 @@ usecaseDiagram
     }
 
 
-## Especificación de Casos de Uso (plantilla exigida)
+## Especificación de Casos de Uso 
 
 Caso de uso 1:
 Nombre: CU-01 Iniciar Partida  
@@ -171,7 +171,7 @@ Sin Maven (javac + java) — Windows CMD:
 
 Nota: si usas un IDE (IntelliJ/VSCode) importa el proyecto Maven o marca src/main/java como source root y ejecuta com.examen.Main.
 
-## APIs públicas (resumen)
+## APIs públicas
 
 - com.examen.Main
   - public static void main(String[] args)

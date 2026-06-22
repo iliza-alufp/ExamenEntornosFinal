@@ -1,4 +1,7 @@
+package com.examen;
+
 public class Proyectil extends EntidadJuego {
+
     public enum Origen { JUGADOR, ENEMIGO }
 
     public Origen origen = Origen.JUGADOR;
@@ -20,7 +23,6 @@ public class Proyectil extends EntidadJuego {
 
     @Override
     public void mover() {
-        // Movimiento según el origen: jugador -> derecha, enemigo -> izquierda
         if (this.origen == Origen.JUGADOR) {
             this.x += velocidad;
         } else {

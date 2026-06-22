@@ -56,26 +56,6 @@ Crea Proyectil con origen (JUGADOR/ENEMIGO), daño, velocidad y lógica de movim
 
 Implementa la detección de colisiones simple en MotorJuego: comparar rectángulos (x,y,w,h) y aplicar consecuencias (dañar, destruir, sumar puntos).
 
-
-
-
-
-Genera pruebas unitarias (JUnit) para MotorJuego: testActualizarMovimiento(), testColisiones(), testAñadirEliminarEntidades().
-
-Añade logs detallados en actualizar() que muestren: tick, posición y estado de cada entidad, colisiones detectadas y puntuación.
-
-Simula un bucle de juego en consola: pide un método run(int ticks, int msDelay) en MotorJuego y muéstrame el código.
-
-Crea comandos para ejecutar el proyecto en Windows (Maven y con javac): compilar y ejecutar desde la terminal integrada.
-
-Genera un ejemplo de sesión por consola que muestre: iniciar partida, desplazar jugador, disparar, enemigo cambia a 'ATACAR', colisión y Game Over.
-
-Aplica validaciones: impedir generar más de N proyectiles del jugador simultáneamente y añadir cooldown de disparo.
-
-Implementa pause/resume y forzar Game Over desde GestorEntradas; actualiza logs y tests correspondientes.
-
-Añade un método en MotorJuego para serializar el estado actual a texto (guardar snapshot) y otro para cargarlo.
-
-Optimiza la comprobación de colisiones para listas grandes: sugiere y aplica un simple broad-phase (grid o buckets).
+arregla todos los errores que tenga los archivos te va a venir en dos partes dejalo funcional
 
 Genera documentación breve (README) con cómo compilar, ejecutar, y las APIs públicas de cada clase.

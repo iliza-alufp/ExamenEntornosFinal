@@ -1,10 +1,8 @@
 package com.examen;
 
 public class SistemaPuntuacion {
-    private int puntos = 0;
 
-    public SistemaPuntuacion() {
-    }
+    private int puntos = 0;
 
     public void sumar(int pts) {
         if (pts <= 0) return;

@@ -37,6 +37,7 @@ Las contribuciones son bienvenidas. Si deseas contribuir, por favor abre un issu
 Genera el esqueleto Java de las 9 clases descritas (Main, MotorJuego, EntidadJuego, NaveJugador, NaveEnemiga, Defensa, GestorEntradas, SistemaPuntuacion, Proyectil) respetando la estructura del workspace.
 
 Crea el archivo Main.java con un método main que inicialice MotorJuego y arranque una partida simulada por consola.
+
 Implementa MotorJuego con un método actualizar() que recorra entidades, actualice posiciones y emita logs explicativos por consola.
 
 Define EntidadJuego como clase abstracta con atributos x,y,ancho,alto,vida y métodos mover(), colisionaCon(EntidadJuego) y renderLog().
@@ -66,8 +67,6 @@ Simula un bucle de juego en consola: pide un método run(int ticks, int msDelay)
 Crea comandos para ejecutar el proyecto en Windows (Maven y con javac): compilar y ejecutar desde la terminal integrada.
 
 Genera un ejemplo de sesión por consola que muestre: iniciar partida, desplazar jugador, disparar, enemigo cambia a 'ATACAR', colisión y Game Over.
-
-Revisa el archivo [ruta_del_archivo] y explica línea a línea qué hace, proponiendo mejoras si detectas problemas." (sustituir ruta_del_archivo)
 
 Aplica validaciones: impedir generar más de N proyectiles del jugador simultáneamente y añadir cooldown de disparo.
 

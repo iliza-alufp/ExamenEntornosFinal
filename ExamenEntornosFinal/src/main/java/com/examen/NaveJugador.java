@@ -1,10 +1,13 @@
 public class NaveJugador extends EntidadJuego {
-    private int x;
-    private int y;
-    private int w;
-    private int h;
-    private int id;
-
     public NaveJugador() {
+        this.ancho = 16;
+        this.alto = 16;
+        this.vida = 3;
+    }
+
+    @Override
+    public void mover() {
+        // Movimiento simple del jugador: hacia la derecha
+        this.x += 2;
     }
 }

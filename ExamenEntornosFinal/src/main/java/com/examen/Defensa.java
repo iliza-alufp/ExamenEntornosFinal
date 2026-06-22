@@ -1,10 +1,12 @@
 public class Defensa extends EntidadJuego {
-    private int x;
-    private int y;
-    private int w;
-    private int h;
-    private int id;
-
     public Defensa() {
+        this.ancho = 20;
+        this.alto = 20;
+        this.vida = 5;
+    }
+
+    @Override
+    public void mover() {
+        // Defensa estática por defecto; no se desplaza.
     }
 }
